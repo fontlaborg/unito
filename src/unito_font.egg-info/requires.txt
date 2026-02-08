@@ -1,0 +1,16 @@
+fonttools>=4.40.0
+fontmake>=3.9.0
+drawbot-skia>=0.5.0
+bumpfontversion>=0.4.1
+diskcache>=5.6.0
+fire>=0.5.0
+unicodedata2>=17.0.0
+requests>=2.31.0
+afdko>=4.0.3
+
+[dev]
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=26.1.0
+ruff>=0.1.0
+mypy>=1.5.0

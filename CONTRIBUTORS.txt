@@ -8,3 +8,20 @@
 #
 # Names should be added to this file as:
 # Name <email address>
+
+# Unito project contributors:
+# (Add your name here when you contribute)
+
+# The Unito font is built from upstream sources. We gratefully
+# acknowledge the work of the following projects:
+#
+# - Google Noto Fonts (https://github.com/notofonts)
+#   Comprehensive Unicode coverage for world scripts
+#
+# - GNU Unifont (https://unifoundry.com)
+#   Bitmap font covering the Unicode Basic Multilingual Plane
+#   by Roman Czyborra, Paul Hardy, and contributors
+#
+# - UnifontEX (https://github.com/stgiga/UnifontEX)
+#   Extended Unifont with additional glyph coverage
+#   by stgiga and contributors

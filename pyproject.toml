@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta:__legacy__"
+
+[project]
+name = "unito-font"
+version = "0.1.0"
+description = "Unito font builder - merges multiple Noto fonts into comprehensive Unicode font"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "OFL-1.1"}
+authors = [
+    {name = "Unito Contributors"},
+]
+keywords = ["font", "unicode", "noto", "merge", "glyph"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: SIL Open Font License 1.1",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Text Processing :: Fonts",
+]
+
+dependencies = [
+    "fonttools>=4.40.0",
+    "fontmake>=3.9.0",
+    "drawbot-skia>=0.5.0",
+    "bumpfontversion>=0.4.1",
+    "diskcache>=5.6.0",
+    "fire>=0.5.0",
+    "unicodedata2>=17.0.0",
+    "requests>=2.31.0",
+    "afdko>=4.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=26.1.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+]
+
+[project.scripts]
+unito-build = "unito.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/fontlaborg/unito-font"
+Repository = "https://github.com/fontlaborg/unito-font"
+Issues = "https://github.com/fontlaborg/unito-font/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+unito = ["*.yaml"]
+
+[tool.black]
+line-length = 100
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
