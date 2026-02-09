@@ -18,7 +18,7 @@ help:
 
 build: venv
 	rm -rf fonts
-	. venv/bin/activate; python3 scripts/build.py
+	. venv/bin/activate; python3 scripts/build.py --cjk --deliver fonts
 
 venv/touchfile: pyproject.toml
 	test -d venv || (command -v uv >/dev/null 2>&1 && uv venv venv || python3 -m venv venv)

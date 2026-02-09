@@ -1,12 +1,14 @@
 """Configuration models and defaults for Unito."""
+# this_file: src/unito/config.py
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import re
 import yaml
+
 from .utils import derive_google_fonts_family, project_root
 
 
@@ -26,7 +28,7 @@ class UnifontWebSpec:
     """Unifoundry source definition for OTF downloads."""
 
     base_url: str = "https://unifoundry.com/pub/unifont/"
-    target_folder: str = "05"
+    target_folder: str = "51unif"
 
 
 @dataclass(frozen=True)
@@ -34,6 +36,7 @@ class UnitoPaths:
     """Filesystem paths used by downloader and merger."""
 
     root: Path
+    sources_dir: Path
     input_dir: Path
     output_dir: Path
     cache_dir: Path
@@ -50,6 +53,25 @@ class UnitoConfig:
     paths: UnitoPaths
     github_fonts: list[GitHubFontSpec] = field(default_factory=list)
     unifont_web: UnifontWebSpec = field(default_factory=UnifontWebSpec)
+
+
+def _resolve_github_repo(repos: dict[str, dict], repo_key: str) -> tuple[str, str]:
+    """Resolve a repository key to ``owner/repo`` and branch."""
+    if repo_key == "google_fonts":
+        return "google/fonts", "main"
+
+    repo_info = repos.get(repo_key, {})
+    repo_url = repo_info.get("url", "") if isinstance(repo_info, dict) else ""
+    if not isinstance(repo_url, str):
+        return "google/fonts", "main"
+
+    repo_match = re.search(r"github\.com/([^/]+/[^/]+)", repo_url)
+    if not repo_match:
+        return "google/fonts", "main"
+
+    branch_match = re.search(r"/tree/([^/]+)", repo_url)
+    branch = branch_match.group(1) if branch_match else "main"
+    return repo_match.group(1).removesuffix(".git"), branch
 
 
 def load_font_sources(config_path: Path) -> list[GitHubFontSpec]:
@@ -70,21 +92,8 @@ def load_font_sources(config_path: Path) -> list[GitHubFontSpec]:
         if not folder_key.startswith("folder_"):
             continue
 
-        folder_num = folder_key.replace("folder_", "")
-        repo_key = folder_data.get("repo", "google_fonts")
-        repo_info = repos.get(repo_key, {})
-
-        # Default to google/fonts main if not specified
-        repo_full = "google/fonts"
-        branch = "main"
-
-        if repo_key == "google_fonts":
-            repo_full = "google/fonts"
-        elif "url" in repo_info:
-            # Simple heuristic for GitHub URLs
-            match = re.search(r"github\.com/([^/]+/[^/]+)", repo_info["url"])
-            if match:
-                repo_full = match.group(1).replace("/tree/main", "").replace("/tree/master", "")
+        folder_num = folder_data.get("target_dir", folder_key.replace("folder_", ""))
+        folder_repo_key = folder_data.get("repo", "google_fonts")
 
         for font_entry in folder_data.get("fonts", []):
             if "path" not in font_entry:
@@ -93,10 +102,12 @@ def load_font_sources(config_path: Path) -> list[GitHubFontSpec]:
             path = font_entry["path"]
             filename = Path(path).name
             family = derive_google_fonts_family(filename)
+            entry_repo_key = font_entry.get("repo", folder_repo_key)
+            repo_full, branch = _resolve_github_repo(repos, entry_repo_key)
 
             # For Google Fonts, path in repo is ofl/Family/Filename
             repo_path = path
-            if repo_key == "google_fonts" and not path.startswith("ofl/"):
+            if repo_full == "google/fonts" and not path.startswith("ofl/"):
                 repo_path = f"ofl/{family}/{filename}"
 
             specs.append(
@@ -115,13 +126,11 @@ def load_font_sources(config_path: Path) -> list[GitHubFontSpec]:
 def _default_seed_specs() -> list[GitHubFontSpec]:
     """Fallback source set when no reference folder is available."""
     entries = [
-        ("01", "NotoSans[wdth,wght].ttf"),
-        ("02", "NotoEmoji[wght].ttf"),
-        ("02", "NotoSansSymbols[wght].ttf"),
-        ("02", "NotoSansSymbols2-Regular.ttf"),
-        ("04", "NotoSansKR[wght].ttf"),
-        ("04", "NotoSansSC[wght].ttf"),
-        ("04", "NotoSansTC[wght].ttf"),
+        ("10base", "NotoSans[wdth,wght].ttf"),
+        ("20symb", "NotoEmoji[wght].ttf"),
+        ("20symb", "NotoSansSymbols[wght].ttf"),
+        ("20symb", "NotoSansSymbols2-Regular.ttf"),
+        ("40cjkb", "NotoSansJP[wght].ttf"),
     ]
     specs: list[GitHubFontSpec] = []
     for folder, filename in entries:
@@ -144,7 +153,7 @@ def discover_google_font_specs(reference_input_dir: Path) -> list[GitHubFontSpec
     if not reference_input_dir.exists():
         return _default_seed_specs()
 
-    allowed_folders = {"01", "02", "03", "04"}
+    allowed_folders = {"10base", "20symb", "30mult", "40cjkb"}
     for folder in sorted(reference_input_dir.iterdir()):
         if not folder.is_dir() or folder.name not in allowed_folders:
             continue
@@ -173,12 +182,14 @@ def discover_google_font_specs(reference_input_dir: Path) -> list[GitHubFontSpec
 def default_config() -> UnitoConfig:
     """Build default runtime config rooted in project directory."""
     root = project_root()
-    input_dir = root / "sources" / "01in"
+    sources_dir = root / "sources"
+    input_dir = sources_dir
     output_dir = root / "sources" / "02out"
     cache_dir = root / "sources" / "cache"
     data_dir = root / "src" / "unito" / "data"
     paths = UnitoPaths(
         root=root,
+        sources_dir=sources_dir,
         input_dir=input_dir,
         output_dir=output_dir,
         cache_dir=cache_dir,
@@ -196,7 +207,7 @@ def default_config() -> UnitoConfig:
                 repo="stgiga/UnifontEX",
                 branch="main",
                 path="UnifontExMono.ttf",
-                target_folder="05",
+                target_folder="50unif",
                 target_name="UnifontExMono.ttf",
             )
         )

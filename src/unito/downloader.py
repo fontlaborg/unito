@@ -38,7 +38,7 @@ def download_github_fonts(config: UnitoConfig, force: bool = False) -> dict[str,
     failures = 0
 
     for spec in config.github_fonts:
-        target_path = config.paths.input_dir / spec.target_folder / spec.target_name
+        target_path = config.paths.sources_dir / spec.target_folder / spec.target_name
         url = _github_raw_url(spec)
         try:
             changed = _download_binary(url, target_path, force=force)
@@ -102,7 +102,7 @@ def download_unifoundry_fonts(config: UnitoConfig, force: bool = False) -> dict[
     ]
 
     download_cache_root = ensure_dir(config.paths.cache_downloads / "unifoundry")
-    target_root = ensure_dir(config.paths.input_dir / config.unifont_web.target_folder)
+    target_root = ensure_dir(config.paths.sources_dir / config.unifont_web.target_folder)
 
     for filename in filenames:
         file_url = f"{release_base}/{urllib.parse.quote(filename)}"
@@ -114,10 +114,10 @@ def download_unifoundry_fonts(config: UnitoConfig, force: bool = False) -> dict[
             _convert_otf_to_ttf(otf_cache_path, ttf_path, force=force)
             if changed or force:
                 downloaded += 1
-                print(f"  Downloaded+Converted: 05/{ttf_name}")
+                print(f"  Downloaded+Converted: {config.unifont_web.target_folder}/{ttf_name}")
             else:
                 skipped += 1
-                print(f"  Cached: 05/{ttf_name}")
+                print(f"  Cached: {config.unifont_web.target_folder}/{ttf_name}")
         except Exception as exc:
             failures += 1
             print(f"  ERROR handling {file_url}: {exc}")
@@ -128,7 +128,7 @@ def download_unifoundry_fonts(config: UnitoConfig, force: bool = False) -> dict[
 def _prepare_hani_from_package(config: UnitoConfig) -> bool:
     """Copy Hani.jsonl from package data directory to input tree."""
     source = config.paths.data_dir / "Hani.jsonl"
-    target = config.paths.input_dir / "hani" / "Hani.jsonl"
+    target = config.paths.sources_dir / "hani" / "Hani.jsonl"
 
     if not source.exists():
         return False
@@ -144,7 +144,7 @@ def _prepare_hani_from_package(config: UnitoConfig) -> bool:
 
 def ensure_hani_frequency_file(config: UnitoConfig, force: bool = False) -> bool:
     """Ensure ``Hani.jsonl`` exists in active input tree."""
-    target = config.paths.input_dir / "hani" / "Hani.jsonl"
+    target = config.paths.sources_dir / "hani" / "Hani.jsonl"
 
     # Try package data dir first
     if _prepare_hani_from_package(config):
@@ -172,7 +172,7 @@ def prepare_font_sources(
 ) -> dict[str, dict[str, int]]:
     """Download all required source fonts and auxiliary data."""
     cfg = config or default_config()
-    ensure_dir(cfg.paths.input_dir)
+    ensure_dir(cfg.paths.sources_dir)
     ensure_dir(cfg.paths.cache_downloads)
 
     print("\n[PREP] Downloading GitHub font sources...")

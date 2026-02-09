@@ -6,7 +6,10 @@ src/unito/cache.py
 src/unito/cli.py
 src/unito/config.py
 src/unito/downloader.py
+src/unito/exclude.py
 src/unito/merger.py
+src/unito/pipeline.py
+src/unito/subsetter.py
 src/unito/utils.py
 src/unito_font.egg-info/PKG-INFO
 src/unito_font.egg-info/SOURCES.txt
@@ -14,3 +17,8 @@ src/unito_font.egg-info/dependency_links.txt
 src/unito_font.egg-info/entry_points.txt
 src/unito_font.egg-info/requires.txt
 src/unito_font.egg-info/top_level.txt
+tests/test_cache.py
+tests/test_exclude.py
+tests/test_merger.py
+tests/test_pipeline.py
+tests/test_subsetter.py

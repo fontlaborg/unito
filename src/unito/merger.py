@@ -116,7 +116,10 @@ def scale_font_upm(font: TTFont, target_upm: int) -> None:
 
 
 def is_excluded_codepoint(
-    codepoint: int, exclude_hani: bool = True, exclude_hang: bool = True
+    codepoint: int,
+    exclude_hani: bool = True,
+    exclude_hang: bool = True,
+    exclude_tang: bool = False,
 ) -> bool:
     """Check if a Unicode codepoint should be excluded."""
     # Strict CJK Unified Ideographs ranges (including extensions)
@@ -148,6 +151,15 @@ def is_excluded_codepoint(
         except (ValueError, Exception):
             pass
 
+    # Tangut script ranges
+    if exclude_tang:
+        if (
+            (0x17000 <= codepoint <= 0x187FF)  # Tangut
+            or (0x18800 <= codepoint <= 0x18AFF)  # Tangut Components
+            or (0x18D00 <= codepoint <= 0x18D7F)  # Tangut Supplement
+        ):
+            return True
+
     # Never exclude Private Use Areas or other non-script specifics unless specified
     if 0xE000 <= codepoint <= 0xF8FF:  # PUA
         return False
@@ -157,6 +169,8 @@ def is_excluded_codepoint(
         if exclude_hani and sc == "Hani":
             return True
         if exclude_hang and sc == "Hang":
+            return True
+        if exclude_tang and sc == "Tang":
             return True
     except (ValueError, AttributeError):
         pass
@@ -362,6 +376,7 @@ def extract_font_glyph_data(
     exclude_hani: bool,
     exclude_hang: bool,
     cache_dir_str: str,
+    exclude_tang: bool = False,
 ) -> dict[str, Any]:
     """Extract glyph and codepoint data from a font file (parallel worker)."""
     try:
@@ -383,7 +398,7 @@ def extract_font_glyph_data(
         for glyph_name, codepoints in glyph_to_codepoints.items():
             valid_codepoints: set[int] = set()
             for cp in codepoints:
-                if is_excluded_codepoint(cp, exclude_hani, exclude_hang):
+                if is_excluded_codepoint(cp, exclude_hani, exclude_hang, exclude_tang):
                     continue
                 if not is_valid_unicode_character(cp):
                     continue
@@ -419,6 +434,7 @@ def merge_glyphs_from_font(
     source_name: str,
     exclude_hani: bool = True,
     exclude_hang: bool = True,
+    exclude_tang: bool = False,
     is_base_font: bool = False,
 ) -> tuple[int, int]:
     """Merge glyphs from source font into target font."""
@@ -454,7 +470,12 @@ def merge_glyphs_from_font(
         for cp in source_codepoints:
             if cp in target_codepoints_covered:
                 continue
-            if is_excluded_codepoint(cp, exclude_hani=exclude_hani, exclude_hang=exclude_hang):
+            if is_excluded_codepoint(
+                cp,
+                exclude_hani=exclude_hani,
+                exclude_hang=exclude_hang,
+                exclude_tang=exclude_tang,
+            ):
                 continue
             if not is_base_font and not is_valid_unicode_character(cp):
                 continue
@@ -761,6 +782,7 @@ def process_fonts_parallel(
     exclude_hang: bool,
     cache_dir: Path,
     max_workers: int | None = None,
+    exclude_tang: bool = False,
 ) -> list[dict[str, Any]]:
     """Process multiple fonts in parallel to extract glyph data."""
     if not font_paths:
@@ -781,6 +803,7 @@ def process_fonts_parallel(
                 exclude_hani,
                 exclude_hang,
                 str(cache_dir),
+                exclude_tang,
             ): fp
             for fp in font_paths
         }

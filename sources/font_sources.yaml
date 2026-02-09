@@ -1,5 +1,7 @@
 # Font sources configuration for Unito font project
+# this_file: sources/font_sources.yaml
 # This file defines all input fonts to be downloaded and merged
+# New directory structure: 10base, 20symb, 30mult, 40cjkb, 50unif, 51unif, 60unito, 60cjk2, 7x (CJK regional)
 
 # Base repos and URLs
 repos:
@@ -10,34 +12,38 @@ repos:
   unifoundry:
     url: "https://unifoundry.com/pub/unifont/"
     version: "17.0.03"
-    base_path: "unifont-17.0.03/font-builds/"
+  source_han_sans:
+    url: "https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/"
 
 # Font sources organized by folder
 sources:
-  # Folder 01: Base fonts (NotoSans variable)
-  folder_01:
+  # 10base: Base NotoSans variable font
+  folder_10base:
     description: "Base NotoSans variable font"
+    target_dir: "10base"
     repo: "google_fonts"
     fonts:
       - path: "notosans/NotoSans[wdth,wght].ttf"
         description: "Variable font with width and weight axes"
+    control_file: "exclude.yaml"
 
-  # Folder 02: Symbols and emoji
-  folder_02:
+  # 20symb: Symbols and emoji
+  folder_20symb:
     description: "Symbols and emoji fonts"
+    target_dir: "20symb"
     repo: "google_fonts"
     fonts:
       - path: "notoemoji/NotoEmoji[wght].ttf"
-        description: "Emoji font with weight axis"
       - path: "notosanssymbols/NotoSansSymbols[wght].ttf"
-        description: "Symbols font with weight axis"
       - path: "notosanssymbols2/NotoSansSymbols2-Regular.ttf"
-        description: "Additional symbols font"
 
-  # Folder 03: World scripts (all 153+ fonts)
-  folder_03:
-    description: "World script fonts"
+  # 30mult: World scripts (excluding Tangut - moved to 60cjk2)
+  folder_30mult:
+    description: "World script fonts (excluding Tangut)"
+    target_dir: "30mult"
     repo: "google_fonts"
+    exclude_fonts:
+      - "NotoSerifTangut-Regular.ttf"
     fonts:
       - path: "notomusic/NotoMusic-Regular.ttf"
       - path: "notosansadlam/NotoSansAdlam[wght].ttf"
@@ -89,7 +95,7 @@ sources:
       - path: "notosansinscriptionalparthian/NotoSansInscriptionalParthian-Regular.ttf"
       - path: "notosansjavanese/NotoSansJavanese[wght].ttf"
       - path: "notosanskaithi/NotoSansKaithi-Regular.ttf"
-      - path: "notosanskannada/NotoSansKannada][wdth,wght].ttf"
+      - path: "notosanskannada/NotoSansKannada[wdth,wght].ttf"
       - path: "notosanskawi/NotoSansKawi[wght].ttf"
       - path: "notosanskayahli/NotoSansKayahLi[wght].ttf"
       - path: "notosanskharoshthi/NotoSansKharoshthi-Regular.ttf"
@@ -198,7 +204,6 @@ sources:
       - path: "notoserifnyiakengpuachuehmong/NotoSerifNyiakengPuachueHmong[wght].ttf"
       - path: "notoserifolduyghur/NotoSerifOldUyghur-Regular.ttf"
       - path: "notoserifottomansiyaq/NotoSerifOttomanSiyaq-Regular.ttf"
-      - path: "notoseriftangut/NotoSerifTangut-Regular.ttf"
       - path: "notoseriftibetan/NotoSerifTibetan[wght].ttf"
       - path: "notoseriftodhri/NotoSerifTodhri-Regular.ttf"
       - path: "notoseriftoto/NotoSerifToto[wght].ttf"
@@ -206,37 +211,104 @@ sources:
       - path: "nototraditionalnushu/NotoTraditionalNushu[wght].ttf"
       - path: "notoznamennymusicalnotation/NotoZnamennyMusicalNotation-Regular.ttf"
 
-  # Folder 04: CJK fonts
-  folder_04:
-    description: "Chinese, Japanese, Korean fonts"
+  # 40cjkb: NotoSansJP for base Unito (non-CJK glyphs only)
+  folder_40cjkb:
+    description: "NotoSansJP for non-CJK shared glyphs"
+    target_dir: "40cjkb"
     repo: "google_fonts"
+    exclude_scripts: ["Hani", "Hang", "Tang"]
     fonts:
-      - path: "notosanskr/NotoSansKR[wght].ttf"
-        description: "Korean font with weight axis"
-      - path: "notosanssc/NotoSansSC[wght].ttf"
-        description: "Simplified Chinese font with weight axis"
+      - path: "notosansjp/NotoSansJP[wght].ttf"
+        description: "Japanese font - Han/Hangul/Tangut excluded during merge"
 
-  # Folder 05: UnifontEX
-  folder_05:
-    description: "UnifontEX from GitHub"
+  # 50unif: Unifont (exclude Han/Hangul/Tangut)
+  folder_50unif:
+    description: "UnifontEX (excluding Han/Hangul/Tangut)"
+    target_dir: "50unif"
     repo: "unifontex"
     fonts:
       - path: "UnifontExMono.ttf"
-        description: "Monospace Unicode font"
+    exclude_scripts: ["Hani", "Hang", "Tang"]
 
-  # Folder 06: Unifont from unifoundry.com
-  folder_06:
-    description: "Unifont from unifoundry.com (OTF → TTF conversion required)"
+  # 60unito: Build output for base Unito family
+  folder_60unito:
+    description: "Build output for non-CJK Unito family"
+    target_dir: "60unito"
+    build: true
+
+  # 60cjk2: Tangut font for CJK families
+  folder_60cjk2:
+    description: "NotoSerifTangut for CJK family builds"
+    target_dir: "60cjk2"
+    repo: "google_fonts"
+    fonts:
+      - path: "notoseriftangut/NotoSerifTangut-Regular.ttf"
+
+  # CJK regional families
+  folder_71hk:
+    description: "Unito HK (Hong Kong Traditional Chinese)"
+    target_dir: "71hk"
+    repo: "google_fonts"
+    fonts:
+      - path: "notosanshk/NotoSansHK[wght].ttf"
+    subset_reference:
+      repo: "source_han_sans"
+      path: "HK/SourceHanSansHK-Regular.otf"
+
+  folder_72jp:
+    description: "Unito JP (Japanese)"
+    target_dir: "72jp"
+    repo: "google_fonts"
+    fonts:
+      - path: "notosansjp/NotoSansJP[wght].ttf"
+    subset_reference:
+      repo: "source_han_sans"
+      path: "JP/SourceHanSansJP-Regular.otf"
+
+  folder_73kr:
+    description: "Unito KR (Korean)"
+    target_dir: "73kr"
+    repo: "google_fonts"
+    fonts:
+      - path: "notosanskr/NotoSansKR[wght].ttf"
+    subset_reference:
+      repo: "source_han_sans"
+      path: "KR/SourceHanSansKR-Regular.otf"
+    extra_fonts:
+      - source: "60cjk2/NotoSerifTangut-Regular.ttf"
+
+  folder_74sc:
+    description: "Unito SC (Simplified Chinese)"
+    target_dir: "74sc"
+    repo: "google_fonts"
+    fonts:
+      - path: "notosanssc/NotoSansSC[wght].ttf"
+    subset_reference:
+      repo: "source_han_sans"
+      path: "CN/SourceHanSansCN-Regular.otf"
+
+  folder_75tc:
+    description: "Unito TC (Traditional Chinese)"
+    target_dir: "75tc"
+    repo: "google_fonts"
+    fonts:
+      - path: "notosanstc/NotoSansTC[wght].ttf"
+    subset_reference:
+      repo: "source_han_sans"
+      path: "TW/SourceHanSansTW-Regular.otf"
+
+  # 51unif: Unifoundry OTF sources (download latest, convert OTF -> TTF)
+  folder_51unif:
+    description: "Unifont from unifoundry.com (OTF -> TTF conversion required)"
+    target_dir: "51unif"
     repo: "unifoundry"
     fonts:
       - url: "https://unifoundry.com/pub/unifont/unifont-17.0.03/font-builds/unifont-17.0.03.otf"
         output_filename: "unifont-17.0.03.ttf"
         conversion: "otf2ttf"
-        description: "Main unifont (requires OTF to TTF conversion)"
       - url: "https://unifoundry.com/pub/unifont/unifont-17.0.03/font-builds/unifont_upper-17.0.03.otf"
         output_filename: "unifont_upper-17.0.03.ttf"
         conversion: "otf2ttf"
-        description: "Upper plane unifont (requires OTF to TTF conversion)"
 
   # Han frequency data
   hani:
@@ -244,29 +316,47 @@ sources:
     repo: "google_fonts"
     fonts:
       - path: "notosanssc/NotoSansSC[wght].ttf"
-        description: "Simplified Chinese font used for Han frequency analysis"
 
 # Output configuration
 output:
-  family_name: "Unito"
-  variants:
-    - name: "Regular"
-      weight: 400
-      style: "normal"
-    - name: "Bold"
-      weight: 700
-      style: "normal"
-    - name: "Condensed"
-      weight: 400
-      style: "normal"
-      width: "condensed"
-    - name: "BoldCondensed"
-      weight: 700
-      style: "normal"
-      width: "condensed"
+  families:
+    - name: "Unito"
+      source_dir: "60unito"
+      variants: &base_variants
+        - name: "Regular"
+          weight: 400
+          width: 100
+          style: "normal"
+        - name: "Bold"
+          weight: 700
+          width: 100
+          style: "normal"
+        - name: "Condensed"
+          weight: 400
+          width: 75
+          style: "normal"
+        - name: "BoldCondensed"
+          weight: 700
+          width: 75
+          style: "normal"
+    - name: "Unito HK"
+      source_dir: "71hk"
+      variants: *base_variants
+    - name: "Unito JP"
+      source_dir: "72jp"
+      variants: *base_variants
+    - name: "Unito KR"
+      source_dir: "73kr"
+      variants: *base_variants
+    - name: "Unito SC"
+      source_dir: "74sc"
+      variants: *base_variants
+    - name: "Unito TC"
+      source_dir: "75tc"
+      variants: *base_variants
 
 # Build options
 build:
-  default_mode: "hang,hani"
+  sources_dir: "sources"
   cache_directory: "sources/cache"
-  output_directory: "fonts/ttf"
+  output_directory: "fonts"

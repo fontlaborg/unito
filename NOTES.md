@@ -1,19 +1,97 @@
+# Improve https://github.com/fontlaborg/unito-font
 
-My Unito font without Hangul, Tangut and Han has 35,693 glyphs, with 29,842 slots remaining. 
+## YAML & Python
 
-- Hangul adds 11,686 (= 47,379). 
-- Tangut adds 6,914 (= 54,293). 
+- ./font_sources.yaml is our main config 
+- ./src/unito/ is the Python package that does the work
 
-So if I don’t include Hangul, I can fit up to 29,842 glyphs. 
-If I include Hangul but don’t include Tangut, I can fit up to 18,156 glyphs. 
-If I include Hangul and Tangut, 11,242. 
+## Non-CJK family: 'Unito' 
 
-I’d like to create variant fonts with Han glyphs for SC (Simplified Chinese), JP (Japanese), TC (Traditional Chinese), and optionally also KR (Korean) and HK (Hong Kong) variants if they’re really necessary. Some of these fonts may include Tangut (so only 11K Han glyphs) and some perhaps would not include Tangut (then I can put 18K glyphs). Point me to the modern (2026) standards, and also popular and "minimal mandatory" standards, and explain the standards. Also give me pointers about where to look for detailed character set definitions (preferably in Adobe Cmap form). 
+Reorganize ./sources/
 
-How many forms are actually shared vs. divergent between these regions in, say, Adobe Source Han Sans? 
+At this point we’re building a set of fonts 'Unito' that are non-Han, non-Hangul, non-Tangut. 
 
-KR: 35,693 = Source Hangul 12,544 + HanKR 8,377 + Tangut 6,914 = 63,528! 
-TW: 35,693 + Source HanTW 17,551 + Hangul 12,544 = 64,930
-HK: 35,693 + Source HanHK 17,743 + Hangul 12,544 = 65,122
-JP: 35,693 + Source HanJP 14,734 + Hangul 12,544 = 62,113
-CN: 35,693 + Source HanCN 27,860 = 63,553
+### ./sources/10base/
+
+- ./sources/01in/01/NotoSans[wdth,wght].ttf should be in ./sources/10base/NotoSans[wdth,wght].ttf 
+- there should be a control file in ./sources/10base/ that determines which Unicode codepoints (and corresponding glyphs) should be REMOVED from that font before subsequent phases 
+- produce the necessary statics (static instantiated fonts) into ./sources/10base/static/
+- NOTE: we must inherit the 'GSUB' and 'GPOS' tables from the base font. We don’t merge 'GSUB'/'GPOS' from other fonts. 
+
+### ./sources/20symb/
+
+- all fonts from ./sources/01in/02/ should be in ./sources/20symb/ 
+- produce the necessary statics into ./sources/20symb/static/
+
+### ./sources/30mult/
+
+- all fonts from ./sources/01in/03/ should be in ./sources/30mult/ 
+- we must ensure that the NotoSerifTangut-Regular.ttf font is not included here! 
+- produce the necessary statics into ./sources/30mult/static/
+
+### ./sources/40cjkb/
+
+- the font from https://github.com/google/fonts/tree/main/ofl/notosansjp/NotoSansJP[wght].ttf should be in ./sources/40cjkb/ 
+- we must ensure that we don’t merge any Hangul, Tangut or Han glyphs from this 
+- produce the necessary statics into ./sources/40cjkb/static/
+
+### ./sources/50unif/
+
+- all fonts from ./sources/01in/05/ should be in ./sources/50unif/ 
+- we must ensure that we don’t copy any Hangul, Tangut or Han glyphs here
+
+### ./sources/60unito/ 
+
+build 'Unito' fonts from the above constituents into ./sources/60unito/build/
+
+## CJK families: 'Unito HK', 'Unito JP', 'Unito KR', 'Unito SC', 'Unito TC' 
+
+### ./sources/71hk/
+
+- take ./notosanshk/NotoSansHK[wght].ttf from the https://github.com/google/fonts/tree/main/ofl/ repo
+- subset it to the glyphset of https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/HK/SourceHanSansHK-Regular.otf 
+- save in ./sources/71hk/NotoSansHK[wght].ttf
+- produce the necessary statics into ./sources/71hk/static/
+- build 'Unito HK' fonts from ./sources/60unito/build/ statics and from ./sources/71hk/static/ fonts into ./sources/71hk/build/
+
+### ./sources/72jp/
+
+- take ./notosansjp/NotoSansJP[wght].ttf from the https://github.com/google/fonts/tree/main/ofl/ repo
+- subset to https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/JP/SourceHanSansJP-Regular.otf 
+- save in ./sources/72jp/NotoSansJP[wght].ttf
+- produce the necessary statics into ./sources/40cjkb/static/
+- build 'Unito JP' fonts from ./sources/60unito/build/ statics and from ./sources/72jp/static/ fonts into ./sources/72jp/build/
+
+### ./sources/73kr/
+
+- NotoSerifTangut-Regular.ttf font from ./sources/01in/03/ should be in ./sources/60cjk2/NotoSerifTangut-Regular.ttf
+- take ./notosanskr/NotoSansKR[wght].ttf from the https://github.com/google/fonts/tree/main/ofl/ repo
+- subset to https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/KR/SourceHanSansKR-Regular.otf 
+- save in ./sources/73kr/NotoSansKR[wght].ttf
+- produce the necessary statics into ./sources/73kr/static/
+- build 'Unito KR' fonts from ./sources/60unito/build/ statics and from ./sources/60cjk2/NotoSerifTangut-Regular.ttf and from ./sources/73kr/static/ fonts into ./sources/73kr/build/
+
+### ./sources/74sc/
+
+- take ./notosanssc/NotoSansSC[wght].ttf from the https://github.com/google/fonts/tree/main/ofl/ repo
+- subset to https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/CN/SourceHanSansCN-Regular.otf 
+- save in ./sources/74sc/NotoSansSC[wght].ttf
+- produce the necessary statics into ./sources/74sc/static/
+- build 'Unito SC' fonts from ./sources/60unito/build/ statics and from ./sources/74sc/static/ fonts into ./sources/74sc/build/
+
+### ./sources/75tc/
+
+- take ./notosanstc/NotoSansTC[wght].ttf from the https://github.com/google/fonts/tree/main/ofl/ repo
+- subset to https://github.com/adobe-fonts/source-han-sans/raw/refs/heads/release/SubsetOTF/TW/SourceHanSansTW-Regular.otf
+- save in ./sources/75tc/NotoSansTC[wght].ttf
+- produce the necessary statics into ./sources/75tc/static/
+- build 'Unito TC' fonts from ./sources/60unito/build/ statics and from ./sources/75tc/static/ fonts into ./sources/75tc/build/
+
+## Delivery 
+
+- Copy all 'Unito', 'Unito HK', 'Unito JP', 'Unito KR', 'Unito SC', 'Unito TC' fonts into ./fonts/
+
+## NOTES
+
+- Currently we build the statics into ./sources/cache/instantiation/ but we should do it with more predictable naming into the 'static' folders as shown above. 
+- We should parallelize the work. 

@@ -1,0 +1,15 @@
+# Exclusion control file for 10base (NotoSans)
+# No codepoints are excluded from the base font.
+#
+# To exclude specific Unicode ranges, add entries like:
+#   exclude_ranges:
+#     - [0x2E80, 0x2EFF]   # CJK Radicals Supplement
+#     - [0x3400, 0x4DBF]   # CJK Unified Ideographs Extension A
+#
+# To exclude by Unicode script property:
+#   exclude_scripts:
+#     - Hani
+#     - Hang
+
+exclude_ranges: []
+exclude_scripts: []
