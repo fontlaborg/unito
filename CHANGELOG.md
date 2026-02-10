@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - Unreleased
 
 ### Added
+- **Minisite**: Built a spectacular font specimen site at `docs/index.html` (GitHub Pages at `fontlab.org/unito-font/`).
+  - Dark-mode design with gold accents, Inter UI font, scroll-reveal animations.
+  - Family overview cards with CJK sample text for all 6 families.
+  - Interactive type tester with family/style/size controls.
+  - Glyph explorer using opentype.js — renders glyphs on canvas with Unicode labels and pagination.
+  - Direct download links for all 24 TTF files.
 - **CJK Families Support**: Implemented build pipeline for 'Unito HK', 'Unito JP', 'Unito KR', 'Unito CN', 'Unito TW'.
   - Sourced Noto Sans CJK variants from Google Fonts.
   - Subsetting to Source Han Sans region-specific glyphsets (HK, JP, KR, CN, TW).

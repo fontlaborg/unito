@@ -1,1 +1,419 @@
-Unito
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unito — A Pan-Unicode Glyph Collection</title>
+  <meta name="description" content="Unito is an open-source pan-Unicode glyph collection providing default forms for Unicode codepoints across Latin, CJK, and hundreds of scripts. 6 families, 24 fonts, free under the SIL Open Font License.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══ HERO ═════════════════════════════════════════ -->
+<section id="hero">
+  <h1 class="hero-title">Unito</h1>
+  <p class="hero-tagline">A pan-Unicode glyph collection</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">6</div>
+      <div class="hero-stat-label">Families</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">24</div>
+      <div class="hero-stat-label">Fonts</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">∞</div>
+      <div class="hero-stat-label">Codepoints</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">OFL</div>
+      <div class="hero-stat-label">License</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO ════════════════════════════════════ -->
+<section id="manifesto" class="reveal">
+  <div class="container">
+    <div class="manifesto-lines">
+      <div class="manifesto-line">A glyph collection.</div>
+      <div class="manifesto-line">Not a text font.</div>
+      <div class="manifesto-line">Default Unicode forms.</div>
+      <div class="manifesto-line">No shaping rules.</div>
+      <div class="manifesto-line">Not a Noto replacement.</div>
+      <div class="manifesto-line">A Unicode reference.</div>
+    </div>
+    <div class="manifesto-body">
+      <p>Unito merges hundreds of Noto fonts into single files that provide <strong>default glyph forms</strong> for Unicode codepoints. It does not include script-specific OpenType shaping rules (GSUB/GPOS) necessary for correct orthographic text in complex scripts — use Noto when you need proper text rendering.</p>
+      <p style="margin-top: 1rem">Includes <strong>Unifont</strong> glyphs for the newest Unicode additions not yet supported by Noto. Only some glyphs vary across styles — many scripts share the same form regardless of weight or width.</p>
+    </div>
+    <div class="feature-strip">
+      <div class="feature-pill">🔤 Glyph collection, no shaping</div>
+      <div class="feature-pill">🌍 Pan-Unicode in one file</div>
+      <div class="feature-pill">🧩 Unifont for newest Unicode</div>
+      <div class="feature-pill">⚖️ Partial style variation</div>
+      <div class="feature-pill">🔓 SIL Open Font License</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAMILIES ════════════════════════════════════ -->
+<section id="families" class="reveal">
+  <div class="container">
+    <div class="section-label">Families</div>
+    <h2 class="section-title">Six families, one collection</h2>
+    <p class="section-desc">Each family adds region-specific CJK glyphs to the base Unito codepoint set.</p>
+    <div class="family-grid" id="family-grid"></div>
+  </div>
+</section>
+
+<!-- ═══ TYPE TESTER ═════════════════════════════════ -->
+<section id="tester" class="reveal">
+  <div class="container">
+    <div class="section-label">Type Tester</div>
+    <h2 class="section-title">Try it yourself</h2>
+    <div class="tester-controls">
+      <div class="tester-control">
+        <label for="tester-family">Family</label>
+        <select id="tester-family"></select>
+      </div>
+      <div class="tester-control">
+        <label for="tester-style">Style</label>
+        <select id="tester-style">
+          <option value="regular">Regular</option>
+          <option value="bold">Bold</option>
+          <option value="condensed">Condensed</option>
+          <option value="boldcondensed">Bold Condensed</option>
+        </select>
+      </div>
+      <div class="tester-control">
+        <label for="tester-size">Size <span class="size-display" id="size-display">48px</span></label>
+        <input type="range" id="tester-size" min="12" max="120" value="48">
+      </div>
+    </div>
+    <div class="tester-preview">
+      <textarea class="tester-input" id="tester-input" spellcheck="false">The quick brown fox jumps over the lazy dog. 0123456789
+Ζεύς, Pair vaut mieux que non.
+日本語テキスト 한국어 텍스트 中文文本</textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GLYPH EXPLORER ═════════════════════════════ -->
+<section id="glyphs" class="reveal">
+  <div class="container">
+    <div class="section-label">Glyph Explorer</div>
+    <h2 class="section-title">Every codepoint, visualised</h2>
+    <div class="glyph-controls">
+      <div class="tester-control">
+        <label for="glyph-font">Font</label>
+        <select id="glyph-font"></select>
+      </div>
+    </div>
+    <div class="glyph-info" id="glyph-info">Select a font to explore its glyphs.</div>
+    <div class="glyph-grid" id="glyph-grid"></div>
+    <div class="glyph-pagination" id="glyph-pagination" style="display:none">
+      <button id="glyph-prev">← Previous</button>
+      <span id="glyph-page-info"></span>
+      <button id="glyph-next">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOWNLOAD ════════════════════════════════════ -->
+<section id="download" class="reveal">
+  <div class="container">
+    <div class="section-label">Download</div>
+    <h2 class="section-title">Get Unito</h2>
+    <p class="section-desc">All fonts are free under the SIL Open Font License. Click any style to download the TTF directly.</p>
+    <div class="download-grid" id="download-grid"></div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ══════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://github.com/fontlaborg/unito-font" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/fontlaborg/unito-font/blob/main/OFL.txt" target="_blank" rel="noopener">License (OFL)</a>
+      <a href="https://fontlab.org" target="_blank" rel="noopener">Fontlab Ltd</a>
+    </div>
+    <p class="footer-copy">© Fontlab Ltd & contributors. Licensed under the SIL Open Font License 1.1.</p>
+  </div>
+</footer>
+
+<!-- ═══ opentype.js ═════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+
+<script>
+// ── Data ──────────────────────────────────────────────
+const BASE = 'https://github.com/fontlaborg/unito-font/raw/refs/heads/main/fonts/';
+const LOCAL = '../fonts/';
+
+const FAMILIES = [
+  {
+    id: 'Unito', name: 'Unito', prefix: 'Unito',
+    desc: 'Base — all Unicode scripts except Hangul, Tangut, and Han. Latin, Cyrillic, Greek, Arabic, Hebrew, Devanagari, Unifont, and hundreds more.',
+    sample: 'The quick brown fox jumps over the lazy dog. ÀÉÎÕÜ àéîõü'
+  },
+  {
+    id: 'UnitoJP', name: 'Unito JP', prefix: 'UnitoJP',
+    desc: 'Japanese — adds Japanese Kanji to the base set.',
+    sample: 'すべての人間は、生まれながらにして自由であり'
+  },
+  {
+    id: 'UnitoCN', name: 'Unito CN', prefix: 'UnitoCN',
+    desc: 'Simplified Chinese — adds Simplified Chinese Hanzi.',
+    sample: '人人生而自由，在尊严和权利上一律平等'
+  },
+  {
+    id: 'UnitoHK', name: 'Unito HK', prefix: 'UnitoHK',
+    desc: 'Hong Kong — adds Chinese Hanzi for Hong Kong.',
+    sample: '人人生而自由，在尊嚴和權利上一律平等'
+  },
+  {
+    id: 'UnitoTW', name: 'Unito TW', prefix: 'UnitoTW',
+    desc: 'Taiwan — adds Traditional Chinese Hanzi for Taiwan.',
+    sample: '人人生而自由，在尊嚴和權利上一律平等'
+  },
+  {
+    id: 'UnitoKR', name: 'Unito KR', prefix: 'UnitoKR',
+    desc: 'Korean — adds Hangul, Hanja, and Tangut.',
+    sample: '모든 인간은 태어날 때부터 자유로우며'
+  }
+];
+
+const STYLES = [
+  { id: 'regular',       label: 'Regular',        suffix: '-Regular' },
+  { id: 'bold',          label: 'Bold',           suffix: '-Bold' },
+  { id: 'condensed',     label: 'Condensed',      suffix: '-Condensed' },
+  { id: 'boldcondensed', label: 'Bold Condensed', suffix: '-BoldCondensed' }
+];
+
+function fontFile(prefix, style) { return prefix + style.suffix + '.ttf'; }
+function rawURL(prefix, style)  { return BASE + fontFile(prefix, style); }
+
+// ── Register @font-face dynamically ───────────────────
+function registerFonts() {
+  FAMILIES.forEach(fam => {
+    STYLES.forEach(st => {
+      const file = fontFile(fam.prefix, st);
+      const isBold = st.id.includes('bold');
+      const isCondensed = st.id.includes('condensed');
+      const familyName = fam.id + (isCondensed ? '-Cond' : '');
+      const css = `
+        @font-face {
+          font-family: '${familyName}';
+          src: url('${LOCAL}${file}') format('truetype');
+          font-weight: ${isBold ? 700 : 400};
+          font-style: normal;
+          font-display: swap;
+        }
+      `;
+      const style = document.createElement('style');
+      style.textContent = css;
+      document.head.appendChild(style);
+    });
+  });
+}
+
+// ── Family Cards ──────────────────────────────────────
+function renderFamilyCards() {
+  const grid = document.getElementById('family-grid');
+  FAMILIES.forEach(fam => {
+    const card = document.createElement('div');
+    card.className = 'family-card';
+    card.innerHTML = `
+      <div class="family-card-name" style="font-family:'${fam.id}',sans-serif">${fam.name}</div>
+      <div class="family-card-desc">${fam.desc}</div>
+      <div class="family-card-sample" style="font-family:'${fam.id}',sans-serif">${fam.sample}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── Type Tester ───────────────────────────────────────
+function initTester() {
+  const familySel = document.getElementById('tester-family');
+  const styleSel  = document.getElementById('tester-style');
+  const sizeSlider = document.getElementById('tester-size');
+  const sizeDisplay = document.getElementById('size-display');
+  const input = document.getElementById('tester-input');
+
+  FAMILIES.forEach(fam => {
+    const opt = document.createElement('option');
+    opt.value = fam.id;
+    opt.textContent = fam.name;
+    familySel.appendChild(opt);
+  });
+
+  function update() {
+    const famId = familySel.value;
+    const styleId = styleSel.value;
+    const size = sizeSlider.value;
+    sizeDisplay.textContent = size + 'px';
+
+    const isBold = styleId.includes('bold');
+    const isCondensed = styleId.includes('condensed');
+    const fontFamily = famId + (isCondensed ? '-Cond' : '');
+
+    input.style.fontFamily = `'${fontFamily}', sans-serif`;
+    input.style.fontWeight = isBold ? '700' : '400';
+    input.style.fontSize = size + 'px';
+  }
+
+  familySel.addEventListener('change', update);
+  styleSel.addEventListener('change', update);
+  sizeSlider.addEventListener('input', update);
+  update();
+}
+
+// ── Glyph Explorer ────────────────────────────────────
+const GLYPHS_PER_PAGE = 200;
+let glyphState = { font: null, page: 0, total: 0 };
+
+function initGlyphExplorer() {
+  const fontSel = document.getElementById('glyph-font');
+
+  FAMILIES.forEach(fam => {
+    STYLES.forEach(st => {
+      const opt = document.createElement('option');
+      opt.value = LOCAL + fontFile(fam.prefix, st);
+      opt.textContent = fam.name + ' ' + st.label;
+      fontSel.appendChild(opt);
+    });
+  });
+
+  fontSel.addEventListener('change', () => loadGlyphs(fontSel.value));
+
+  document.getElementById('glyph-prev').addEventListener('click', () => {
+    if (glyphState.page > 0) { glyphState.page--; renderGlyphs(); }
+  });
+  document.getElementById('glyph-next').addEventListener('click', () => {
+    const maxPage = Math.ceil(glyphState.total / GLYPHS_PER_PAGE) - 1;
+    if (glyphState.page < maxPage) { glyphState.page++; renderGlyphs(); }
+  });
+}
+
+async function loadGlyphs(url) {
+  const info = document.getElementById('glyph-info');
+  info.textContent = 'Loading font…';
+  try {
+    const res = await fetch(url);
+    const buf = await res.arrayBuffer();
+    glyphState.font = opentype.parse(buf);
+    glyphState.total = glyphState.font.numGlyphs;
+    glyphState.page = 0;
+    info.textContent = `${glyphState.total.toLocaleString()} glyphs loaded`;
+    renderGlyphs();
+  } catch(e) {
+    info.textContent = 'Failed to load font. Try a smaller family (e.g. Unito Regular).';
+    console.error(e);
+  }
+}
+
+function renderGlyphs() {
+  const grid = document.getElementById('glyph-grid');
+  const pagination = document.getElementById('glyph-pagination');
+  const pageInfo = document.getElementById('glyph-page-info');
+  const prevBtn = document.getElementById('glyph-prev');
+  const nextBtn = document.getElementById('glyph-next');
+  grid.innerHTML = '';
+
+  const font = glyphState.font;
+  if (!font) return;
+
+  const start = glyphState.page * GLYPHS_PER_PAGE;
+  const end = Math.min(start + GLYPHS_PER_PAGE, glyphState.total);
+  const totalPages = Math.ceil(glyphState.total / GLYPHS_PER_PAGE);
+
+  for (let i = start; i < end; i++) {
+    const glyph = font.glyphs.get(i);
+    const cell = document.createElement('div');
+    cell.className = 'glyph-cell';
+
+    const canvas = document.createElement('canvas');
+    const size = 44;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const fontSize = 30;
+    const x = size / 2 - (glyph.advanceWidth || 0) / font.unitsPerEm * fontSize / 2;
+    const y = size * 0.72;
+    try {
+      ctx.fillStyle = '#f0f0f0';
+      const path = glyph.getPath(x, y, fontSize);
+      path.fill = '#f0f0f0';
+      path.draw(ctx);
+    } catch(e) { /* some glyphs may fail */ }
+
+    const label = document.createElement('div');
+    label.className = 'glyph-cell-label';
+    const uni = glyph.unicode !== undefined ? 'U+' + glyph.unicode.toString(16).toUpperCase().padStart(4, '0') : glyph.name || '#' + i;
+    label.textContent = uni;
+    label.title = (glyph.name || '') + ' ' + uni;
+
+    cell.appendChild(canvas);
+    cell.appendChild(label);
+    grid.appendChild(cell);
+  }
+
+  pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+  pageInfo.textContent = `Page ${glyphState.page + 1} of ${totalPages}`;
+  prevBtn.disabled = glyphState.page === 0;
+  nextBtn.disabled = glyphState.page >= totalPages - 1;
+}
+
+// ── Download Cards ────────────────────────────────────
+function renderDownloads() {
+  const grid = document.getElementById('download-grid');
+  FAMILIES.forEach(fam => {
+    const card = document.createElement('div');
+    card.className = 'download-card';
+    const links = STYLES.map(st => {
+      const url = rawURL(fam.prefix, st);
+      const file = fontFile(fam.prefix, st);
+      return `<li><a href="${url}" download="${file}">${st.label} (.ttf)</a></li>`;
+    }).join('');
+    card.innerHTML = `<h3>${fam.name}</h3><ul>${links}</ul>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── Scroll Reveal ─────────────────────────────────────
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// ── Init ──────────────────────────────────────────────
+registerFonts();
+renderFamilyCards();
+initTester();
+initGlyphExplorer();
+renderDownloads();
+initReveal();
+</script>
+
+</body>
+</html>

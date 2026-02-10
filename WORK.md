@@ -2,40 +2,31 @@
 this_file: WORK.md
 ---
 
-## 2026-02-09
+## 2026-02-10
 
 ### Scope
-Fix Unifont source routing so:
-- `50unif` downloads `UnifontExMono.ttf` from `stgiga/UnifontEX`.
-- `51unif` receives latest Unifoundry OTFs and converts them to TTF.
+Build a spectacular minisite for the Unito font family inside `./docs/`.
 
 ### Changes made
-- Updated `src/unito/config.py`:
-  - Added `_resolve_github_repo()` helper.
-  - `load_font_sources()` now supports per-font `repo` override (`font_entry.repo`).
-  - `UnifontWebSpec.target_folder` changed to `51unif`.
-- Updated `src/unito/pipeline.py`:
-  - Added `51unif` to `SOURCE_FOLDERS` and base merge order.
-  - Base build now merges `50unif` (UnifontEX) then `51unif` (Unifoundry).
-- Updated `sources/font_sources.yaml`:
-  - `folder_50unif` now explicitly uses repo `unifontex`.
-  - Added/renamed Unifoundry section to `folder_51unif` with `target_dir: "51unif"`.
-- Updated tests:
-  - `tests/test_config.py` covers font-level repo override and `51unif` default target.
-  - `tests/conftest.py` includes `51unif` fixture folder.
+- Created `docs/style.css`: full design system — dark theme (`#0a0a0f`), gold accents (`#e8c547`), Inter from Google Fonts for UI, `@font-face` for Unito specimens, fluid typography via `clamp()`, scroll-reveal animations, responsive breakpoints.
+- Rewrote `docs/index.html`: complete single-page minisite with 7 sections:
+  1. **Hero** — full-viewport, gradient-animated "Unito" title, key stats (6 families, 24 fonts, ∞ scripts, OFL)
+  2. **About** — description of pan-Unicode coverage, feature highlight cards
+  3. **Families** — 6 cards (Unito, JP, CN, HK, TW, KR) with sample text in each script
+  4. **Type Tester** — live preview with family/style/size controls
+  5. **Glyph Explorer** — uses opentype.js to parse TTF and render glyphs on canvas with pagination
+  6. **Download** — direct download links to GitHub raw URLs for all 24 fonts
+  7. **Footer** — GitHub, license, Fontlab Ltd links
+- No build step required — all JS inline, opentype.js from jsDelivr CDN.
 
 ### Verification
-- Confirmed live latest Unifoundry release directory from `https://unifoundry.com/pub/unifont/`:
-  - Latest detected: `unifont-17.0.03` (checked 2026-02-09).
-- Confirmed URLs respond:
-  - `https://raw.githubusercontent.com/stgiga/UnifontEX/main/UnifontExMono.ttf` -> HTTP 200.
-  - `https://unifoundry.com/pub/unifont/unifont-17.0.03/font-builds/unifont-17.0.03.otf` -> HTTP 200.
-  - `https://unifoundry.com/pub/unifont/unifont-17.0.03/font-builds/unifont_upper-17.0.03.otf` -> HTTP 200.
-- Tests:
-  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run --python 3.13 pytest tests/test_config.py -q` -> **6 passed**.
-  - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 uv run --python 3.13 pytest -q` -> **3 failed, 36 passed** (pre-existing failures in `tests/test_merger.py` and `tests/test_pipeline.py`, unrelated to this Unifont routing fix).
-  - `uvx hatch test` -> fails in this environment due hatch selecting CPython 3.14 and `skia-python` wheel incompatibility.
+- Opened `http://localhost:8765/docs/index.html` in browser
+- All 7 sections render correctly with dark theme and scroll-reveal animations
+- Hero shows gradient-animated "Unito" title rendered in Unito Bold
+- Family cards display CJK sample text correctly
+- Type tester updates live when changing family/style/size
+- Glyph explorer loads font, renders glyphs on canvas with Unicode labels and pagination
+- Download links point to correct GitHub raw URLs
 
-### Next
-- Resolve baseline failing tests in `tests/test_merger.py` and `tests/test_pipeline.py`.
-- Pin hatch test interpreter to 3.13 or adjust dependencies to avoid CPython 3.14 wheel conflict.
+### Previous (2026-02-09)
+- Fixed Unifont source routing (`50unif` / `51unif`) — see previous WORK.md entry
