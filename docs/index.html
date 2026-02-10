@@ -153,7 +153,7 @@
 
 <script>
 // ── Data ──────────────────────────────────────────────
-const BASE = 'https://github.com/fontlaborg/unito-font/raw/refs/heads/main/fonts/';
+const BASE = 'https://cdn.jsdelivr.net/gh/fontlaborg/unito@main/fonts/';
 const LOCAL = '../fonts/';
 
 const FAMILIES = [
@@ -284,7 +284,7 @@ function initGlyphExplorer() {
   FAMILIES.forEach(fam => {
     STYLES.forEach(st => {
       const opt = document.createElement('option');
-      opt.value = LOCAL + fontFile(fam.prefix, st);
+      opt.value = BASE + fontFile(fam.prefix, st);
       opt.textContent = fam.name + ' ' + st.label;
       fontSel.appendChild(opt);
     });
