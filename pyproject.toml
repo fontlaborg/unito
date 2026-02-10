@@ -33,6 +33,7 @@ dependencies = [
     "diskcache>=5.6.0",
     "fire>=0.5.0",
     "unicodedata2>=17.0.0",
+    "pyyaml>=6.0.0",
     "requests>=2.31.0",
     "afdko>=4.0.3",
 ]

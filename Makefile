@@ -5,6 +5,13 @@ DRAWBOT_OUTPUT=$(shell ls documentation/*.py 2>/dev/null | sed 's/\.py/.png/g')
 
 .PHONY: help build venv customize test proof images clean update-project-template update
 
+venv: venv/touchfile
+	EDITABLE=$$(venv/bin/python -m pip show unito-font 2>/dev/null | sed -n 's/^Editable project location: //p'); \
+	if [ "$$EDITABLE" != "$$(pwd)" ]; then \
+		venv/bin/python -m pip install -e .; \
+		touch venv/touchfile; \
+	fi
+
 help:
 	@echo "###"
 	@echo "# Build targets for $(FAMILY)"
@@ -18,11 +25,11 @@ help:
 
 build: venv
 	rm -rf fonts
-	. venv/bin/activate; python3 scripts/build.py --cjk --deliver fonts
+	venv/bin/unito-build --cjk --deliver fonts
 
 venv/touchfile: pyproject.toml
 	test -d venv || (command -v uv >/dev/null 2>&1 && uv venv venv || python3 -m venv venv)
-	. venv/bin/activate; (command -v uv >/dev/null 2>&1 && uv pip install -e . || pip install -e .)
+	venv/bin/python -m pip install -e .
 	touch venv/touchfile
 
 test: build.stamp
@@ -30,12 +37,12 @@ test: build.stamp
 	TOCHECK=$$(find fonts/variable -type f 2>/dev/null); if [ -z "$$TOCHECK" ]; then TOCHECK=$$(find fonts/ttf -type f 2>/dev/null); fi ; mkdir -p out/ out/fontspector; fontspector --profile googlefonts -l warn --full-lists --succinct --html out/fontspector/fontspector-report.html --ghmarkdown out/fontspector/fontspector-report.md --badges out/badges $$TOCHECK  || echo '::warning file=sources/config.yaml,title=fontspector failures::The fontspector QA check reported errors in your font. Please check the generated report.'
 
 proof: venv build.stamp
-	TOCHECK=$$(find fonts/variable -type f 2>/dev/null); if [ -z "$$TOCHECK" ]; then TOCHECK=$$(find fonts/ttf -type f 2>/dev/null); fi ; . venv/bin/activate; mkdir -p out/ out/proof; diffenator2 proof $$TOCHECK -o out/proof
+	TOCHECK=$$(find fonts/variable -type f 2>/dev/null); if [ -z "$$TOCHECK" ]; then TOCHECK=$$(find fonts/ttf -type f 2>/dev/null); fi ; mkdir -p out/ out/proof; venv/bin/diffenator2 proof $$TOCHECK -o out/proof
 
 images: venv $(DRAWBOT_OUTPUT)
 
 %.png: %.py build.stamp
-	. venv/bin/activate; python3 $< --output $@
+	venv/bin/python $< --output $@
 
 clean:
 	rm -rf venv
