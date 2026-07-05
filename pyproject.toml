@@ -1,22 +1,21 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta:__legacy__"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "unito-font"
-version = "0.1.0"
-description = "Unito font builder - merges multiple Noto fonts into comprehensive Unicode font"
+dynamic = ["version"]
+description = "Unito font builder - merges hundreds of Noto fonts plus Unifont into comprehensive pan-Unicode TTFs"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 license = {text = "OFL-1.1"}
 authors = [
     {name = "Unito Contributors"},
 ]
 keywords = ["font", "unicode", "noto", "merge", "glyph"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: SIL Open Font License 1.1",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -42,7 +41,6 @@ dependencies = [
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
-    "black>=26.1.0",
     "ruff>=0.1.0",
     "mypy>=1.5.0",
 ]
@@ -55,22 +53,20 @@ Homepage = "https://github.com/fontlaborg/unito-font"
 Repository = "https://github.com/fontlaborg/unito-font"
 Issues = "https://github.com/fontlaborg/unito-font/issues"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+# Version is derived from git tags (vX.Y.Z) via hatch-vcs; no hand-edited
+# version string to keep in sync across pyproject and the package.
+[tool.hatch.version]
+source = "vcs"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/unito"]
 
-[tool.setuptools.package-data]
-unito = ["*.yaml"]
-
-[tool.black]
-line-length = 100
-target-version = ["py313"]
+[tool.hatch.build.targets.sdist]
+include = ["src/unito", "README.md", "OFL.txt"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]

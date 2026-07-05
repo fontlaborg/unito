@@ -32,3 +32,24 @@ proof
 Thumbs.db
 venv
 venv-test
+
+# Python build / test artifacts
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+*.egg-info/
+.venv/
+
+# Font build outputs (proofs, specimen renders, fontspector reports)
+out/
+proof/
+sources/cache/
+sources/*/build/

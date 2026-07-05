@@ -6,7 +6,7 @@ Unito merges hundreds of [Noto](https://fonts.google.com/noto) fonts into single
 
 Includes [Unifont](https://unifoundry.com/unifont/) glyphs for the newest Unicode additions not yet supported by Noto. Only some glyphs vary across styles — many scripts share the same form regardless of weight or width.
 
-> **Not a text font.** Unito is a glyph collection and Unicode reference, not a Noto replacement.
+> **Not a text font.** Unito is a glyph collection and Unicode reference, not a Noto replacement. For example, Unito has Arabic glyphs, but no shaping rules — set Arabic in Unito and the letters stand apart in their isolated forms instead of joining. To render Arabic correctly, use [Noto Naskh Arabic](https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic). Reach for Unito when you need to *see* a codepoint, not typeset it.
 
 ## Families
 
@@ -69,15 +69,15 @@ All fonts are free under the [SIL Open Font License](OFL.txt). Click any link to
 
 ## Building
 
-Fonts are built automatically by GitHub Actions — see the "Actions" tab for the latest build.
+Fonts are built automatically by GitHub Actions — see the "Actions" tab for the latest build. Pushing a `vX.Y.Z` tag also cuts a GitHub Release with the built fonts zipped in.
 
-To build manually:
+The canonical build entry point is `python scripts/build.py`. The `Makefile` wraps it and adds QA/proof targets:
 
-- `make build` — produce font files
-- `make test` — run [FontBakery](https://github.com/googlefonts/fontbakery) quality assurance tests
+- `make build` — produce font files (calls `scripts/build.py`)
+- `make test` — run [fontspector](https://github.com/fonttools/fontspector) quality-assurance checks
 - `make proof` — generate HTML proof files
 
-Proof files and QA tests are also available via GitHub Actions at `https://fontlaborg.github.io/unito`.
+Which source wins when two fonts cover the same codepoint, and how to add a new source or Unicode block, is documented in [BUILDING.md](BUILDING.md). Proof files and QA reports are published at `https://fontlaborg.github.io/unito`.
 
 ## About
 

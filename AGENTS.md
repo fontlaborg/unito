@@ -8,7 +8,7 @@ The core logic resides in `src/unito/` and consists of the following components:
 
 ### 1. Configuration (`config.py` & `font_sources.yaml`)
 - **Role**: Defines the blueprint for the font.
-- **File**: `src/unito/font_sources.yaml`
+- **File**: `sources/font_sources.yaml`
 - **Logic**: `config.py` parses this YAML file, resolving paths and validating sources.
 - **Structure**:
   - `repos`: Base URLs for font repositories (Google Fonts, Unifoundry, etc.).
@@ -63,7 +63,7 @@ Fonts are organized into logical "folders" in `font_sources.yaml`. The merge pro
 ## How to Extend
 
 ### Adding New Fonts
-1. Open `src/unito/font_sources.yaml`.
+1. Open `sources/font_sources.yaml`.
 2. Locate the appropriate `folder_XX` section (or create a new one if it's a distinct category).
 3. Add an entry under `fonts`:
    ```yaml

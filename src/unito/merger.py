@@ -2,17 +2,15 @@
 
 from __future__ import annotations
 
-import io
 import json
 import math
 import unicodedata
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from copy import deepcopy
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .cache import ensure_dir, get_instantiated_font_path, open_font_cache
+from .cache import ensure_dir, get_instantiated_font_path
 from .config import UnitoConfig, default_config
 from .downloader import prepare_font_sources
 from .utils import ensure_vendor_fonttools
@@ -437,7 +435,18 @@ def merge_glyphs_from_font(
     exclude_tang: bool = False,
     is_base_font: bool = False,
 ) -> tuple[int, int]:
-    """Merge glyphs from source font into target font."""
+    """Merge glyphs from ``source_font`` into ``target_font``.
+
+    Codepoint priority is first-come, first-served: a codepoint already
+    present in the target is never overwritten (see the ``target_codepoints_covered``
+    guard below). Priority therefore follows the order in which sources are
+    merged, which is the folder order in ``pipeline.SOURCE_FOLDERS``
+    (10base -> 20symb -> 30mult -> 40cjkb -> 50unif). The base font is merged
+    first, so its glyphs win every conflict; Unifont, merged last, only fills
+    codepoints no earlier source supplied.
+
+    Returns ``(glyphs_added, codepoints_added)``.
+    """
     if not is_truetype_font(source_font):
         print(f"    SKIP: {source_name} is CFF/OTF (not TrueType), cannot merge")
         return 0, 0
@@ -468,6 +477,7 @@ def merge_glyphs_from_font(
     for source_glyph_name, source_codepoints in source_glyph_to_codepoints.items():
         new_codepoints: set[int] = set()
         for cp in source_codepoints:
+            # First source to claim a codepoint keeps it; later sources skip it.
             if cp in target_codepoints_covered:
                 continue
             if is_excluded_codepoint(
@@ -1084,7 +1094,7 @@ def main(
         else:
             print(f"\n  WARNING: --hani specified but {hani_dir} not found")
 
-    print(f"\n[6/6] Finalizing font...")
+    print("\n[6/6] Finalizing font...")
     print("  Removing OpenType layout tables...")
     remove_layout_tables(target_font)
 

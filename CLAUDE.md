@@ -2,13 +2,16 @@
 
 ## Commands
 - **Build**: `python scripts/build.py` or `unito-build` (builds fonts from config)
-- **Test**: `pytest` (runs all tests in `tests/`)
-- **Lint**:
-  - `ruff check .` (lints Python code)
-  - `black .` (formats Python code)
-  - `mypy .` (checks static types)
-- **Install**: `pip install -e .` (installs package in editable mode)
-- **Install Dev**: `pip install -e ".[dev]"` (includes lint/test tools)
+- **Test**: `python -m pytest` (runs all tests in `tests/`)
+- **Lint/format**:
+  - `uvx ruff check .` (lints Python code)
+  - `uvx ruff format .` (formats Python code; replaces black)
+  - `uvx mypy src` (checks static types)
+- **Install**: `uv pip install -e .` (installs package in editable mode)
+- **Install Dev**: `uv pip install -e ".[dev]"` (includes lint/test tools)
+
+Versioning is git-tag driven via `hatch-vcs` (tags `vX.Y.Z`); there is no
+hand-edited version string. Release with `uvx gitnextver@latest .`.
 
 ## Project Structure
 - `src/unito/`: Main package source code
@@ -27,7 +30,7 @@
 
 ## Style Guidelines
 - **Code Style**: 
-  - Follow **Black** formatting (line length 100).
+  - Follow **ruff format** (line length 100).
   - Use **Ruff** for linting (Python 3.11+ target).
   - Type hints required (checked by **MyPy**).
 - **Commits**: Use Conventional Commits (e.g., `feat: add new script`, `fix: merge logic`).
@@ -37,5 +40,5 @@
 ## Workflow
 1. Modify `src/unito/font_sources.yaml` to add/remove fonts.
 2. Run `python scripts/build.py` to test the build.
-3. Run `pytest` to ensure no regressions.
-4. Lint with `ruff check .` and `black .` before committing.
+3. Run `python -m pytest` to ensure no regressions.
+4. Lint with `uvx ruff check .` and `uvx ruff format .` before committing.

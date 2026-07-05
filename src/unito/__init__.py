@@ -18,4 +18,9 @@ __all__ = [
     "should_exclude_codepoint",
     "subset_to_reference",
 ]
-__version__ = "0.2.0"
+try:
+    from importlib.metadata import PackageNotFoundError, version
+
+    __version__ = version("unito-font")
+except PackageNotFoundError:  # package not installed (e.g. running from a source checkout)
+    __version__ = "0.0.0+unknown"

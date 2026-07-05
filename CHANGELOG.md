@@ -5,7 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - Unreleased
+## [1.0.14] - 2026-07-05
+
+### Changed
+- **Versioning**: Version is now derived from git tags (`vX.Y.Z`) via `hatch-vcs`; the hardcoded version strings in `pyproject.toml` and `src/unito/__init__.py` are gone. `__version__` reads from installed package metadata.
+- **Build backend**: Switched from legacy `setuptools.build_meta:__legacy__` to `hatchling`.
+- **Toolchain**: `CLAUDE.md` and dev deps now use `uv` and `ruff format` (dropped `black`) to match the fontlaborg standard toolchain.
+
+### Added
+- **Merge tests**: `tests/test_merge_smoke.py` builds two real synthetic TrueType fonts, merges them, and asserts both merge behaviour (new codepoint arrives, shared codepoint kept) and table sanity (the merged font recompiles; glyf/cmap/hmtx/glyph-order agree). No network. Suite is now 49 tests.
+- **BUILDING.md**: Explains source layout, the folder-order codepoint priority rule, exclusions, and how to add a source or Unicode block.
+- **Icon**: `docs/assets/icon.png` concept illustration.
+
+### Fixed
+- **Docs accuracy**: `README.md` "Building" section now names fontspector (the tool CI actually runs), not FontBakery; added a concrete Arabic shaping example to the "Not a text font" callout. `AGENTS.md` now points at the real config path `sources/font_sources.yaml` (was `src/unito/font_sources.yaml`).
+- **Comments**: `src/unito/merger.py` now documents the first-come codepoint priority order.
+
+### Hygiene
+- `.gitignore` now covers Python/build artifacts (`build/`, `dist/`, `*.egg-info/`, `__pycache__/`, `.coverage`, caches) and font build outputs (`out/`, `proof/`, `sources/cache/`, `sources/*/build/`).
+
+## [0.2.0] - Earlier (pre-tag-based versioning)
 
 ### Added
 - **Minisite**: Built a spectacular font specimen site at `docs/index.html` (GitHub Pages at `fontlab.org/unito-font/`).
